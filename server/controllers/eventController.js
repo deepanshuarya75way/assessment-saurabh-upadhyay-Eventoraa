@@ -1,5 +1,48 @@
 const Event = require('../models/Event');
+const QrCode=require('qrcode');
 
+
+exports.getEventQRCode=async(req,res)=>{
+    try{
+        const{id}=req.params;
+        const event=await Event.findById(id);
+        
+        if(!event){
+            return res.status(404).json({message:'Event not found'});
+        }
+        if(event.qrCode){
+            return res.status(200).json({
+                success:true,
+                qrCode:event.qrCode,
+                eventUrl:`${process.env.Client_URL || 'http://localhost:5173'}/events/${event._id}`
+
+            });
+        }
+        const clientBaseUrl=process.env.Client_URL||'http://localhost:5173';
+        const eventUrl=`${clientBaseUrl}/events/${event._id}`;
+
+        const qrcodeDataUrl=await QRCode.toDataURL(eventUrl,{
+            errorCorrectionLevel:'H',
+            margin: 2,
+            width:320,
+            color:{
+                dark:'#000000',
+                light:'#ffffff'
+            }
+        });
+        event.qrCode=qrCodeDataUrl;
+        await event.save();
+
+        return res.status(200).json({
+            success:true,
+            qrCode:qrCodeDataUrl,
+            eventUrl
+        });
+    }catch(error){
+        console.error('Error generating QR code :',error);
+        return res.status(500).json({message:'Server error generating QR code '});
+    }
+}
 exports.getEvents = async (req, res) => {
     try {
         const filters = {};

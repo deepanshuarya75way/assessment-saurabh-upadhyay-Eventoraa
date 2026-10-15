@@ -5,6 +5,8 @@ const eventSchema = new mongoose.Schema({
     description: { type: String, required: true },
     date: { type: Date, required: true },
     location: { type: String, required: true },
+    qrCode:{type: String},
+    createdBy:{type:mongoose.Schema.Types.ObjectId,ref:'User'},
     category: { type: String, required: true },
     totalSeats: { type: Number, required: true },
     availableSeats: { type: Number, required: true },

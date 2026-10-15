@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 import { AuthContext } from '../context/AuthContext';
 import { FaCalendarAlt, FaMapMarkerAlt, FaChair, FaMoneyBillWave } from 'react-icons/fa';
+import EventQRCode from '../components/EventQRCode';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -72,7 +73,9 @@ const EventDetail = () => {
                     {event.category}
                 </div>
             )}
-
+             <div className="mt-6">
+                <EventQRCode eventId={event._id} eventTitle={event.title}/>
+                </div>
             <div className="p-8 md:p-12">
                 <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-6">
                     <div>
